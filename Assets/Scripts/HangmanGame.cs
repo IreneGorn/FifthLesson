@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class HangmanGame : MonoBehaviour
@@ -13,13 +9,13 @@ public class HangmanGame : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textField;
     [SerializeField] private int hp = 6;
     [SerializeField] private GameObject[] hpImage;
-    [SerializeField] private TextMeshProUGUI _wrongLetters;
+    [SerializeField] private TextMeshProUGUI wrongLetters;
     [SerializeField] private GameObject endPanel;
     [SerializeField] private TextMeshProUGUI resultText;
     [SerializeField] private TextMeshProUGUI hitPointsText;
     [SerializeField] private TextMeshProUGUI hintText;
 
-    private Dictionary<string, string> words = new Dictionary<string, string>()
+    private readonly Dictionary<string, string> _words = new Dictionary<string, string>()
     {
         ["Cat"] = "Pet",
         ["Time"] = "What can fly without wings?",
@@ -27,61 +23,49 @@ public class HangmanGame : MonoBehaviour
         ["Chair"] = "What has legs but cannot walk?",
         ["Fire"] = "If I drink, I die. If I eat, I am fine. What am I?"
     };
-    private string[] keys;
+    private string[] _keys;
 
-    private List<char> guessedLetters = new List<char>();
-    private List<char> wrongTriedLetters = new List<char>();
+    private readonly List<char> _guessedLetters = new List<char>();
+    private readonly List<char> _wrongTriedLetters = new List<char>();
 
-    // private string[] words =
-    // {
-    //     "Cat",
-    //     "Lesson",
-    //     "Time",
-    //     "Unity" 
-    // };
-
-    private string wordToGuess = "";
+    private string _wordToGuess = "";
     
-    private KeyCode lastKeyPressed;
+    private KeyCode _lastKeyPressed;
 
     private void Start()
     {
-        keys = words.Keys.ToArray();
-        var randomKey = Random.Range(0, keys.Length);
+        _keys = _words.Keys.ToArray();
+        var randomKey = Random.Range(0, _keys.Length);
         
-        wordToGuess = keys[randomKey];
+        _wordToGuess = _keys[randomKey];
 
-        hintText.text = words[wordToGuess];
+        hintText.text = _words[_wordToGuess];
         
         hitPointsText.text = "Hit points: " + hp;
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         var e = Event.current;
-        if (!e.isKey) return; //если клавиша не нажата - выходим из метода
-        //Debug.Log("Detected key code: " + e.keyCode);
+        if (!e.isKey) return; 
         
-        if (e.keyCode == KeyCode.None || lastKeyPressed == e.keyCode || endPanel.activeSelf) return; //если клавиша "пустая" или такая же, как прошлая, то выходим из метода
+        if (e.keyCode == KeyCode.None || _lastKeyPressed == e.keyCode || endPanel.activeSelf) return;
         
         ProcessKey(e.keyCode);
-        lastKeyPressed = e.keyCode;
+        _lastKeyPressed = e.keyCode;
     }
 
     private void ProcessKey(KeyCode key)
     {
-        //print("Word to guess is: " + word);
-        print("Key pressed: " + key);
-
         var pressedKeyString = key.ToString()[0];
 
-        var wordUppercase = wordToGuess.ToUpper();
+        var wordUppercase = _wordToGuess.ToUpper();
         var wordContainsPressedKey = wordUppercase.Contains(pressedKeyString);
-        bool letterWasGuessed = guessedLetters.Contains(pressedKeyString);
+        bool letterWasGuessed = _guessedLetters.Contains(pressedKeyString);
 
-        if (!wordContainsPressedKey && !wrongTriedLetters.Contains(pressedKeyString))
+        if (!wordContainsPressedKey && !_wrongTriedLetters.Contains(pressedKeyString))
         {
-            wrongTriedLetters.Add(pressedKeyString);
+            _wrongTriedLetters.Add(pressedKeyString);
             hp -= 1;
             ChangeHpImage(hp);
             
@@ -93,20 +77,19 @@ public class HangmanGame : MonoBehaviour
             }
             else
             {
-                _wrongLetters.text += pressedKeyString + " ";
+                wrongLetters.text += pressedKeyString + " ";
                 hitPointsText.text = "Hit points: " + hp;
-                //print("Wrong letter! Hp left = " + hp);
             }
         }
         if (wordContainsPressedKey && !letterWasGuessed)
         {
-            guessedLetters.Add(pressedKeyString);
+            _guessedLetters.Add(pressedKeyString);
         }
 
-        string stringToPrint = "";
+        var stringToPrint = "";
         foreach (var letterInWord in wordUppercase)
         {
-            if (guessedLetters.Contains(letterInWord))
+            if (_guessedLetters.Contains(letterInWord))
             {
                 stringToPrint += letterInWord;
             }
@@ -120,15 +103,12 @@ public class HangmanGame : MonoBehaviour
         {
             endPanel.SetActive(true);
             resultText.text = "Congratulations! You win!";
-            print("You Win!");
         }
-        
-        //print(string.Join(", ", guessedLetters));
-        //print(stringToPrint);
+
         textField.text = stringToPrint;
     }
-    
-    void ChangeHpImage(int hpValue)
+
+    private void ChangeHpImage(int hpValue)
     {
         foreach (var image in hpImage)
         {

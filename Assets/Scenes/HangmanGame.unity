@@ -2187,7 +2187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f877b28924c2b1479661a2ee95ea48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _textField: {fileID: 528742420}
+  textField: {fileID: 528742420}
   hp: 6
   hpImage:
   - {fileID: 1104265494}
@@ -2196,7 +2196,7 @@ MonoBehaviour:
   - {fileID: 1091239461}
   - {fileID: 16330664}
   - {fileID: 110343871}
-  _wrongLetters: {fileID: 1449924440}
+  wrongLetters: {fileID: 1449924440}
   endPanel: {fileID: 328075210}
   resultText: {fileID: 1062734856}
   hitPointsText: {fileID: 574815333}
