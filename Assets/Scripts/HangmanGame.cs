@@ -10,24 +10,35 @@ using Random = UnityEngine.Random;
 
 public class HangmanGame : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _textField;
+    [SerializeField] private TextMeshProUGUI textField;
     [SerializeField] private int hp = 6;
     [SerializeField] private GameObject[] hpImage;
     [SerializeField] private TextMeshProUGUI _wrongLetters;
     [SerializeField] private GameObject endPanel;
     [SerializeField] private TextMeshProUGUI resultText;
     [SerializeField] private TextMeshProUGUI hitPointsText;
+    [SerializeField] private TextMeshProUGUI hintText;
+
+    private Dictionary<string, string> words = new Dictionary<string, string>()
+    {
+        ["Cat"] = "Pet",
+        ["Time"] = "What can fly without wings?",
+        ["Unity"] = "Cross-platform game engine",
+        ["Chair"] = "What has legs but cannot walk?",
+        ["Fire"] = "If I drink, I die. If I eat, I am fine. What am I?"
+    };
+    private string[] keys;
 
     private List<char> guessedLetters = new List<char>();
     private List<char> wrongTriedLetters = new List<char>();
 
-    private string[] words =
-    {
-        "Cat",
-        "Lesson",
-        "Time",
-        "Unity" 
-    };
+    // private string[] words =
+    // {
+    //     "Cat",
+    //     "Lesson",
+    //     "Time",
+    //     "Unity" 
+    // };
 
     private string wordToGuess = "";
     
@@ -35,9 +46,12 @@ public class HangmanGame : MonoBehaviour
 
     private void Start()
     {
-        var randomIndex = Random.Range(0, words.Length);
+        keys = words.Keys.ToArray();
+        var randomKey = Random.Range(0, keys.Length);
         
-        wordToGuess = words[randomIndex];
+        wordToGuess = keys[randomKey];
+
+        hintText.text = words[wordToGuess];
         
         hitPointsText.text = "Hit points: " + hp;
     }
@@ -89,9 +103,7 @@ public class HangmanGame : MonoBehaviour
             guessedLetters.Add(pressedKeyString);
         }
 
-        bool entireWordGuessed = true;
         string stringToPrint = "";
-        string stringOfWrongLetters = "";
         foreach (var letterInWord in wordUppercase)
         {
             if (guessedLetters.Contains(letterInWord))
@@ -113,7 +125,7 @@ public class HangmanGame : MonoBehaviour
         
         //print(string.Join(", ", guessedLetters));
         //print(stringToPrint);
-        _textField.text = stringToPrint;
+        textField.text = stringToPrint;
     }
     
     void ChangeHpImage(int hpValue)
