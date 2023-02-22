@@ -48,7 +48,7 @@ public class HangmanGame : MonoBehaviour
         if (!e.isKey) return; //если клавиша не нажата - выходим из метода
         //Debug.Log("Detected key code: " + e.keyCode);
         
-        if (e.keyCode == KeyCode.None || lastKeyPressed == e.keyCode || endPanel.activeSelf) return; //если клавиша "пустая" или такая же, как прошлая, то выходим из метода
+        if (e.keyCode == KeyCode.None || lastKeyPressed == e.keyCode || endPanel.activeSelf || e.keyCode == KeyCode.Escape) return; //если клавиша "пустая" или такая же, как прошлая, то выходим из метода
         
         ProcessKey(e.keyCode);
         lastKeyPressed = e.keyCode;
@@ -124,5 +124,11 @@ public class HangmanGame : MonoBehaviour
         }
     }
 
-    
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
 }
