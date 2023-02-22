@@ -15,7 +15,7 @@ public class HangmanGame : MonoBehaviour
     [SerializeField] private TextMeshProUGUI hitPointsText;
     [SerializeField] private TextMeshProUGUI hintText;
 
-    private readonly Dictionary<string, string> _words = new Dictionary<string, string>()
+    /*private readonly Dictionary<string, string> _words = new Dictionary<string, string>()
     {
         ["Cat"] = "Pet",
         ["Time"] = "What can fly without wings?",
@@ -23,7 +23,23 @@ public class HangmanGame : MonoBehaviour
         ["Chair"] = "What has legs but cannot walk?",
         ["Fire"] = "If I drink, I die. If I eat, I am fine. What am I?"
     };
-    private string[] _keys;
+    private string[] _keys;*/
+
+    private readonly string[] _words = {
+        "Cat",
+        "Time",
+        "Unity",
+        "Chair",
+        "Fire"
+    };
+
+    private readonly string[] _hints = {
+        "Pet",
+        "What can fly without wings?",
+        "Cross-platform game engine",
+        "What has legs but cannot walk?",
+        "If I drink, I die. If I eat, I am fine. What am I?"
+    };
 
     private readonly List<char> _guessedLetters = new List<char>();
     private readonly List<char> _wrongTriedLetters = new List<char>();
@@ -34,12 +50,14 @@ public class HangmanGame : MonoBehaviour
 
     private void Start()
     {
-        _keys = _words.Keys.ToArray();
-        var randomKey = Random.Range(0, _keys.Length);
-        
-        _wordToGuess = _keys[randomKey];
+        // _keys = _words.Keys.ToArray();
+        // var randomKey = Random.Range(0, _keys.Length);
+        // _wordToGuess = _keys[randomKey];
+        //hintText.text = _words[_wordToGuess];
 
-        hintText.text = _words[_wordToGuess];
+        var randomIndex = Random.Range(0, _words.Length);
+        _wordToGuess = _words[randomIndex];
+        hintText.text = _hints[randomIndex];
         
         hitPointsText.text = "Hit points: " + hp;
     }
