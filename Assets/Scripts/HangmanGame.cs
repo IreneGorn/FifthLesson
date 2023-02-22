@@ -2,18 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class HangmanGame : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textField;
-    [SerializeField] private int hp = 6;
-    [SerializeField] private GameObject[] hpImage;
-    [SerializeField] private TextMeshProUGUI wrongLetters;
-    [SerializeField] private GameObject endPanel;
-    [SerializeField] private TextMeshProUGUI resultText;
-    [SerializeField] private TextMeshProUGUI hitPointsText;
-    [SerializeField] private TextMeshProUGUI hintText;
+    [FormerlySerializedAs("textField")] [SerializeField] private TextMeshProUGUI _textField;
+    [FormerlySerializedAs("hp")] [SerializeField] private int _hp = 6;
+    [FormerlySerializedAs("hpImage")] [SerializeField] private GameObject[] _hpImage;
+    [FormerlySerializedAs("wrongLetters")] [SerializeField] private TextMeshProUGUI _wrongLetters;
+    [FormerlySerializedAs("endPanel")] [SerializeField] private GameObject _endPanel;
+    [FormerlySerializedAs("resultText")] [SerializeField] private TextMeshProUGUI _resultText;
+    [FormerlySerializedAs("hitPointsText")] [SerializeField] private TextMeshProUGUI _hitPointsText;
+    [FormerlySerializedAs("hintText")] [SerializeField] private TextMeshProUGUI _hintText;
 
     /*private readonly Dictionary<string, string> _words = new Dictionary<string, string>()
     {
@@ -53,13 +54,13 @@ public class HangmanGame : MonoBehaviour
         // _keys = _words.Keys.ToArray();
         // var randomKey = Random.Range(0, _keys.Length);
         // _wordToGuess = _keys[randomKey];
-        //hintText.text = _words[_wordToGuess];
+        //_hintText.text = _words[_wordToGuess];
 
         var randomIndex = Random.Range(0, _words.Length);
         _wordToGuess = _words[randomIndex];
-        hintText.text = _hints[randomIndex];
+        _hintText.text = _hints[randomIndex];
         
-        hitPointsText.text = "Hit points: " + hp;
+        _hitPointsText.text = "Hit points: " + _hp;
     }
 
     private void OnGUI()
@@ -67,7 +68,7 @@ public class HangmanGame : MonoBehaviour
         var e = Event.current;
         if (!e.isKey) return; 
         
-        if (e.keyCode == KeyCode.None || _lastKeyPressed == e.keyCode || endPanel.activeSelf) return;
+        if (e.keyCode == KeyCode.None || _lastKeyPressed == e.keyCode || _endPanel.activeSelf) return;
         
         ProcessKey(e.keyCode);
         _lastKeyPressed = e.keyCode;
@@ -84,19 +85,19 @@ public class HangmanGame : MonoBehaviour
         if (!wordContainsPressedKey && !_wrongTriedLetters.Contains(pressedKeyString))
         {
             _wrongTriedLetters.Add(pressedKeyString);
-            hp -= 1;
-            ChangeHpImage(hp);
+            _hp -= 1;
+            ChangeHpImage(_hp);
             
-            if (hp <= 0)
+            if (_hp <= 0)
             {
-                endPanel.SetActive(true);
+                _endPanel.SetActive(true);
                 
-                resultText.text = "You lose!";
+                _resultText.text = "You lose!";
             }
             else
             {
-                wrongLetters.text += pressedKeyString + " ";
-                hitPointsText.text = "Hit points: " + hp;
+                _wrongLetters.text += pressedKeyString + " ";
+                _hitPointsText.text = "Hit points: " + _hp;
             }
         }
         if (wordContainsPressedKey && !letterWasGuessed)
@@ -119,16 +120,16 @@ public class HangmanGame : MonoBehaviour
 
         if (wordUppercase == stringToPrint)
         {
-            endPanel.SetActive(true);
-            resultText.text = "Congratulations! You win!";
+            _endPanel.SetActive(true);
+            _resultText.text = "Congratulations! You win!";
         }
 
-        textField.text = stringToPrint;
+        _textField.text = stringToPrint;
     }
 
     private void ChangeHpImage(int hpValue)
     {
-        foreach (var image in hpImage)
+        foreach (var image in _hpImage)
         {
             image.SetActive(hpValue.ToString() == image.name);
         }
